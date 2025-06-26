@@ -1,0 +1,32 @@
+[[stage]]
+chkpt_file = "stage1.chkpt"
+termination = "simple"
+max_score = 0.6
+min_steps = 25
+max_steps = 100
+
+[stage.scoring]
+type = "geometric_mean"
+[[stage.scoring.component]]
+
+[stage.scoring.component.custom_alerts.endpoint]
+name = "Unwanted SMARTS"
+weight = 0.79
+[stage.scoring.component.custom_alerts.endpoint.params]
+smarts = [ "[*;r8]", "[#8][#8]", "C#C",]
+[[stage.scoring.component]]
+
+[stage.scoring.component.MolecularWeight.endpoint]
+name = "Molecular weight"
+weight = 0.342
+[stage.scoring.component.MolecularWeight.transform]
+type = "double_sigmoid"
+low = 200.0
+high = 500.0
+coef_div = 500.0
+coef_si = 20.0
+coef_se = 20.0
+
+[parameters]
+prior_file = "../../reinvent4/priors/reinvent.prior"
+agent_file = "C:\\Users\\user\\Desktop\\GP\\backend\\priors\\prior_20250626_002916_6428c867c4254291b8776d122801e403.prior"

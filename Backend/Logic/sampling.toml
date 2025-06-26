@@ -1,0 +1,10 @@
+run_type = "sampling"
+device = "cpu"
+json_out_config = "_sampling.json"
+
+[parameters]
+model_file = "../../reinvent4/priors/reinvent.prior"
+output_file = "../../backend/results/sampling.csv"
+num_smiles = 157
+randomize_smiles = true
+unique_molecules = true

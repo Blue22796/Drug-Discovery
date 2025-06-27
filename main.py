@@ -1,9 +1,8 @@
 import uvicorn
 from fastapi import FastAPI
-from backend.controllers.priors import router as priors_router
-from backend.controllers.runs import router as runs_router
-from backend.controllers.scorers import router as scorers_router
-from backend.controllers.run_operations import router as run_ops_router
+from Backend.Controllers.priors_controller import router as priors_router
+from Backend.Controllers.runs_controller import router as runs_router
+from Backend.Controllers.scorers_controller import router as scorers_router
 
 app = FastAPI(
     title="Drug Discovery API",

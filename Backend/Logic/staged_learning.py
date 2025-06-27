@@ -12,24 +12,55 @@ CONFIG_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), './configs'
 os.makedirs(PRIORS_DIR, exist_ok=True)
 os.makedirs(CONFIG_DIR, exist_ok=True)
 
+import os
+import shutil
+from datetime import datetime
+from uuid import uuid4
+from sqlalchemy.orm import Session
+from Models.prior import Prior
+from Models.agent import Agent
+from db.database import SessionLocal, PRIORS_DIR
 
-def initiate_CL(prior_path: str) -> str:
-    """
-    Copy the given prior file into the backend priors directory with a unique name.
+def initiate_CL(prior_id: int, model_name: str, db: Session = None) -> Agent:
+    # 1) Acquire a session if none provided
+    external_session = db is not None
+    if not external_session:
+        db = SessionLocal()
 
-    Args:
-        prior_path: Path to the existing .prior file.
-    Returns:
-        new_prior_path: The new unique path under backend/priors.
-    """
-    if not os.path.isfile(prior_path):
-        raise FileNotFoundError(f"Prior file not found: {prior_path}")
+    try:
+        # 2) Fetch the Prior record
+        prior = db.query(Prior).get(prior_id)
+        if not prior:
+            raise ValueError(f"No Prior with ID {prior_id}")
 
-    ext = os.path.splitext(prior_path)[1]
-    unique_name = f"prior_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex}{ext}"
-    new_prior_path = os.path.join(PRIORS_DIR, unique_name)
-    shutil.copy(prior_path, new_prior_path)
-    return new_prior_path
+        # 3) Ensure the .prior file exists
+        if not os.path.isfile(prior.prior_path):
+            raise FileNotFoundError(f"Missing prior file at {prior.prior_path}")
+
+        # 4) Copy the prior file to create the agent checkpoint
+        ext = os.path.splitext(prior.prior_path)[1]
+        new_filename = f"agent_{datetime.utcnow():%Y%m%d_%H%M%S}_{uuid4().hex}{ext}"
+        os.makedirs(PRIORS_DIR, exist_ok=True)
+        dest_path = os.path.join(PRIORS_DIR, new_filename)
+        shutil.copy(prior.prior_path, dest_path)
+
+        # 5) Create and save the Agent record
+        agent = Agent(
+            name=model_name,
+            prior_id=prior.id,
+            takes_file=prior.takes_file,
+            epochs=0,
+            agent_path=dest_path
+        )
+        db.add(agent)
+        db.commit()
+        db.refresh(agent)
+
+        return agent
+
+    finally:
+        if not external_session:
+            db.close()
 
 global_params = {
     # **Add these two** so the top of your TOML is valid
@@ -131,7 +162,7 @@ params = {
                             ]
                         },
                     }
-                }
+                },
                 "comment" : "abcd"
             },
             {
@@ -156,4 +187,4 @@ params = {
 }
 pri = "../../reinvent4/priors/reinvent.prior"
 agent = initiate_CL(pri)
-perform_stage(pri, agent, "../../backend/output/"+pri+agent+"stage_1", params) 
+perform_stage(pri, agent.agent_path, "../../backend/output/"+pri+agent+"stage_1", params) 

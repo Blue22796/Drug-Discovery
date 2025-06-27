@@ -11,7 +11,7 @@ from backend.logic.run_ops import (
     duplicate_run_logic,
     transfer_run_logic,
 )
-from backend.models.schemas import (
+from backend.schemas import (
     RunResponse,
     RunCreateRequest,
     MoleculeDetail,
@@ -21,7 +21,7 @@ from backend.models.schemas import (
 router = APIRouter()
 
 # ---- Runs Endpoints ----
-@router.get("/runs", response_model=List[RunResponse]], tags=["runs"])
+@router.get("/runs", response_model=List[RunResponse], tags=["runs"])
 async def list_runs():
     """
     List all runs.
@@ -37,14 +37,14 @@ async def create_run(req: RunCreateRequest):
     return {"message": "Run created", "run_id": new_id}
 
 # ---- Run Operations Endpoints ----
-@router.put("/run/sample", response_model=List[MoleculeDetail]], tags=["run_operations"])
+@router.put("/run/sample", response_model=List[MoleculeDetail], tags=["run_operations"])
 async def sample_run(run_id: int = Query(...)):
     """
     Sample molecules for a given run.
     """
     return await sample_molecules_logic(run_id)
 
-@router.get("/run/molecule/{molecule_id}", response_model=MoleculeDetail], tags=["run_operations"])
+@router.get("/run/molecule/{molecule_id}", response_model=MoleculeDetail, tags=["run_operations"])
 async def get_molecule(molecule_id: int):
     """
     Get detailed HTML view of a molecule.
@@ -54,7 +54,7 @@ async def get_molecule(molecule_id: int):
         raise HTTPException(status_code=404, detail="Molecule not found")
     return m
 
-@router.put("/run/score", response_model=List[MoleculeDetail]], tags=["run_operations"])
+@router.put("/run/score", response_model=List[MoleculeDetail], tags=["run_operations"])
 async def score_molecules(requests: List[ScoreRequest] = Body(...)):
     """
     Score a list of molecules.

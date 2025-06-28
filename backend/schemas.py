@@ -1,9 +1,9 @@
 from pydantic import BaseModel
 from typing import Optional
 class SampleRequest(BaseModel):
-    model_path: str
-    num_smiles: int = 157
-    randomize_smiles: bool = True
+    agent_id:          int
+    num_smiles:        Optional[int]     = 174
+    randomize_smiles:  Optional[bool]    = True
 
 class RunResponse(BaseModel):
     run_id: int

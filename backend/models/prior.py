@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Boolean
-from models.base import Base
+from backend.models.base import Base
 
 class Prior(Base):
     __tablename__ = 'priors'

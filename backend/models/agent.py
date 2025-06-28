@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
-from models.base import Base
+from backend.models.base import Base
 
 class Agent(Base):
     __tablename__ = 'agents'
@@ -15,5 +15,5 @@ class Agent(Base):
     prior = relationship("Prior", back_populates="agents")
 
 # Backref for Prior
-from models.prior import Prior
+from backend.models.prior import Prior
 Prior.agents = relationship("Agent", order_by=Agent.id, back_populates="prior")

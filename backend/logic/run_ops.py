@@ -1,18 +1,26 @@
 import subprocess
 import toml
 import pandas as pd 
+from sqlalchemy.orm import Session
+from backend.models.agent import Agent
+from backend.database.database import SessionLocal
 from pathlib import Path
 
 DIR = Path(__file__).resolve().parent
 
 async def sample_molecules_logic(req):
+    db: Session = SessionLocal()
+    agent = db.query(Agent).get(req.agent_id)
+    if not agent:
+        raise ValueError(f"No agent with id={req.agent_id}")
+    
     toml_config = {
         'run_type': 'sampling',
         'device': 'cuda:0',
         'json_out_config': '_sampling.json',
         'parameters': {
-            'model_file': req.model_path,
-            'output_file': str(DIR / '../../Backend/Results/sampling.csv'),
+            'model_file': agent.agent_path,
+            'output_file': str(DIR / '../../backend/results/sampling.csv'),
             'num_smiles': req.num_smiles,
             'randomize_smiles': req.randomize_smiles,
             'unique_molecules': True
@@ -32,7 +40,7 @@ async def sample_molecules_logic(req):
     if process.returncode != 0:
         raise Exception(f"Sampling failed: {process.stderr}")
 
-    csv_path = DIR / '../../Backend/Results/sampling.csv'
+    csv_path = DIR / '../../backend/results/sampling.csv'
     df = pd.read_csv(csv_path)
 
     result = df.to_dict(orient="records")

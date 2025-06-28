@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
-from Models.base import Base
+from backend.models.base import Base
 
 class Stage(Base):
     __tablename__ = 'stages'
@@ -16,5 +16,5 @@ class Stage(Base):
     scoring_plugins = relationship("ScoringPlugin", back_populates="stage")
 
 # Backref for Agent
-from Models.agent import Agent
+from backend.models.agent import Agent
 Agent.stages = relationship("Stage", order_by=Stage.id, back_populates="agent")

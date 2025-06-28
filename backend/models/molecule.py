@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Float, ForeignKey
 from sqlalchemy.orm import relationship
-from Models.base import Base
+from models.base import Base
 
 class Molecule(Base):
     __tablename__ = 'molecules'

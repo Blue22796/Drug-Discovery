@@ -12,6 +12,7 @@ from backend.logic.run_ops import (
     transfer_run_logic,
 )
 from backend.schemas import (
+    SampleRequest,
     RunResponse,
     RunCreateRequest,
     MoleculeDetail,
@@ -37,12 +38,11 @@ async def create_run(req: RunCreateRequest):
     return {"message": "Run created", "run_id": new_id}
 
 # ---- Run Operations Endpoints ----
-@router.put("/run/sample", response_model=List[MoleculeDetail], tags=["run_operations"])
-async def sample_run(run_id: int = Query(...)):
-    """
-    Sample molecules for a given run.
-    """
-    return await sample_molecules_logic(run_id)
+@router.post("/run/sample", tags=["run_operations"])
+async def sample_run(
+    req: SampleRequest
+):
+    return await sample_molecules_logic(req)
 
 @router.get("/run/molecule/{molecule_id}", response_model=MoleculeDetail, tags=["run_operations"])
 async def get_molecule(molecule_id: int):

@@ -1,6 +1,6 @@
-from fastapi import APIRouter, HTTPException, Query, Body
 from typing import List, Optional, Any
-
+from fastapi import APIRouter, UploadFile, File, Form, HTTPException, Body, Query
+from fastapi.responses import StreamingResponse
 # Import logic and schemas
 from backend.logic.runs import get_all_runs, create_run_logic
 from backend.logic.run_ops import (
@@ -39,10 +39,16 @@ async def create_run(req: RunCreateRequest):
 
 # ---- Run Operations Endpoints ----
 @router.post("/run/sample", tags=["run_operations"])
-async def sample_run(
-    req: SampleRequest
-):
-    return await sample_molecules_logic(req)
+async def sample_run(req: SampleRequest):
+    csv_path = await sample_molecules_logic(req)
+    
+    # Return the CSV file as a downloadable stream
+    return StreamingResponse(
+        open(csv_path, mode="rb"),
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=sampling_results.csv"}
+    )
+
 
 @router.get("/run/molecule/{molecule_id}", response_model=MoleculeDetail, tags=["run_operations"])
 async def get_molecule(molecule_id: int):
@@ -84,12 +90,12 @@ async def duplicate_run(
 
 @router.post("/run/transfer", tags=["run_operations"])
 async def transfer_run(
-    run_id: int = Query(...),
-    epochs: int = Query(...),
-    molecules: List[ScoreRequest] = Body(...),
+    prior_id: int = Form(...),
+    agent_name: str = Form(...),
+    epochs: int = Form(...),
+    file: UploadFile = File(...)
 ):
-    """
-    Transfer molecules to another run with specified epochs.
-    """
-    msg = await transfer_run_logic(run_id, epochs, molecules)
-    return {"message": msg}
+    if not file.filename.endswith(".csv"):
+        raise HTTPException(status_code=400, detail="Please upload a CSV file.")
+
+    return await transfer_run_logic(prior_id, agent_name, epochs, file)

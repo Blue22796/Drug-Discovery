@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional , List
 class SampleRequest(BaseModel):
     agent_id:          int
     num_smiles:        Optional[int]     = 174
@@ -18,3 +18,8 @@ class MoleculeDetail(BaseModel):
 
 class ScoreRequest(BaseModel):
     SMILES: str
+
+class TransferRequest(BaseModel):
+    agent_id: int
+    epochs: int
+    smiles: List[str]

@@ -1,0 +1,14 @@
+run_type = "transfer_learning"
+device = "cuda:0"
+json_out_config = "backend/uploads/prior_1_TL_reinvent/transfer_config.json"
+
+[parameters]
+num_epochs = 3
+save_every_n_epochs = 3
+batch_size = 50
+num_refs = 100
+sample_batch_size = 100
+input_model_file = "REINVENT4/priors/reinvent.prior"
+smiles_file = "/home/omarf/Projects/Drug-Discovery/backend/uploads/prior_1_TL_reinvent/compounds.smi"
+validation_smiles_file = "/home/omarf/Projects/Drug-Discovery/backend/uploads/prior_1_TL_reinvent/validation_compounds.smi"
+output_model_file = "backend/uploads/prior_1_TL_reinvent/TL_reinvent.model"

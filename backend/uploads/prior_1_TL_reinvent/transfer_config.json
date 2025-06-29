@@ -1,0 +1,43 @@
+{
+    "run_type": "transfer_learning",
+    "device": "cuda:0",
+    "use_cuda": true,
+    "tb_logdir": null,
+    "json_out_config": "backend/uploads/prior_1_TL_reinvent/transfer_config.json",
+    "seed": null,
+    "parameters": {
+        "num_epochs": 3,
+        "batch_size": 50,
+        "input_model_file": "REINVENT4/priors/reinvent.prior",
+        "output_model_file": "backend/uploads/prior_1_TL_reinvent/TL_reinvent.model",
+        "smiles_file": "/home/omarf/Projects/Drug-Discovery/backend/uploads/prior_1_TL_reinvent/compounds.smi",
+        "sample_batch_size": 100,
+        "save_every_n_epochs": 3,
+        "starting_epoch": 1,
+        "shuffle_each_epoch": true,
+        "num_refs": 100,
+        "validation_smiles_file": "/home/omarf/Projects/Drug-Discovery/backend/uploads/prior_1_TL_reinvent/validation_compounds.smi",
+        "standardize_smiles": true,
+        "randomize_smiles": true,
+        "randomize_all_smiles": false,
+        "internal_diversity": false,
+        "max_sequence_length": 128,
+        "clip_gradient_norm": 1.0,
+        "pairs": {
+            "type": "tanimoto",
+            "upper_threshold": 1.0,
+            "lower_threshold": 0.7,
+            "min_cardinality": 1,
+            "max_cardinality": 199
+        },
+        "ranking_loss_penalty": false,
+        "n_cpus": 1
+    },
+    "scoring": null,
+    "scheduler": {},
+    "responder": null,
+    "stage": null,
+    "learning_strategy": null,
+    "diversity_filter": null,
+    "inception": null
+}

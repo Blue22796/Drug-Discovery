@@ -1,10 +1,10 @@
 run_type = "sampling"
-device = "cuda:0"
+device = "cpu"
 json_out_config = "_sampling.json"
 
 [parameters]
-model_file = "/home/omarf/Projects/Drug-Discovery/REINVENT4/priors/reinvent.prior"
+model_file = "backend/uploads/prior_1_TL_reinvent/TL_reinvent.model"
 output_file = "/home/omarf/Projects/Drug-Discovery/backend/logic/../../backend/results/sampling.csv"
-num_smiles = 174
+num_smiles = 100
 randomize_smiles = true
 unique_molecules = true

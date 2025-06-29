@@ -1,13 +1,13 @@
 {
     "run_type": "sampling",
-    "device": "cuda:0",
+    "device": "cpu",
     "use_cuda": true,
     "tb_logdir": null,
     "json_out_config": "_sampling.json",
     "seed": null,
     "parameters": {
-        "model_file": "/home/omarf/Projects/Drug-Discovery/REINVENT4/priors/reinvent.prior",
-        "num_smiles": 174,
+        "model_file": "backend/uploads/prior_1_TL_reinvent/TL_reinvent.model",
+        "num_smiles": 100,
         "smiles_file": null,
         "target_smiles_path": "",
         "sample_strategy": "multinomial",
